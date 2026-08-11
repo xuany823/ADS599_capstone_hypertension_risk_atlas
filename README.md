@@ -80,6 +80,7 @@ All four sources are public, free, and joined on the 5-digit county FIPS / GEOID
 Hypertension-Risk-Atlas/
 ├── .devcontainer/       # devcontainer.json for VS Code Remote Containers 
 ├── github/workflow/     # GitHub Actions workflows for CI/CD (e.g., run pipeline on push)
+├── dashboard/           # Streamlit app and assets 
 ├── data/
 │   ├── final/           # final analytic dataset (cleaned, merged, and feature-engineered)
 │   ├── processed/       # datasets created by the ETL pipeline (incl. master_dataset_all_variables.csv)
@@ -97,7 +98,6 @@ Hypertension-Risk-Atlas/
 │   ├── 03_FeatureEngineering/ # Python script for feature enginnering and dimensionality reduction
 │   ├── 04_generate_eda_report.py # Python script to generate EDA report (figures, tables, and summary statistics) in HTML format
 │   └── 05_generate_model_report.py # Python script to generate model report (figures, tables, and summary statistics) in HTML format
-├── .gitattributes        # controls how tracked files are treated by Git (e.g., line endings, diffing, etc.)
 ├── .gitignore            # controls which files are ignored by Git (e.g., large raw data, virtual environment, etc.)
 ├── audit_data.py         # checks for data integrity and completeness
 ├── hypertension_atlas.db # SQLite database of merged datasets
@@ -176,7 +176,7 @@ python main.py
 
 The project includes an interactive Streamlit dashboard designed to explore county-level health indicators, environmental factors, and machine learning predictions.
 
-👉 Access the Live Dashboard Here: <ads599capstonehypertensionriskatlas-3tepewveftselpfgfsn9nc.streamlit.app>
+👉 Access the Live Dashboard Here: [<ads599capstonehypertensionriskatlas-3tepewveftselpfgfsn9nc.streamlit.app>](https://ads599capstonehypertensionriskatlas-b6cz6ygt7lui5xt4s4awuk.streamlit.app/)
 
 (or launch it locally using the instructions below)
 
