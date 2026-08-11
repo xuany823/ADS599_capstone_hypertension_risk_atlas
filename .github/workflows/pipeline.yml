@@ -25,10 +25,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository with LFS data
+    - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        lfs: true
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -58,4 +56,4 @@ jobs:
           data/final/eda_summary_report.html
           data/final/modeling_summary_report.html
           data/final/best_model_pipeline.joblib
-        retention-days: 2
+        retention-days: 30

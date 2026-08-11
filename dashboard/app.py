@@ -60,19 +60,89 @@ def set_bg_image(png_file):
 set_bg_image("background.png")
 
 # --- Connect to SQLite database and load datasets ---
+import os
+
+# --- Connect to SQLite database and load datasets ---
 @st.cache_data
 def load_data_from_sqlite():
-    conn = sqlite3.connect("hypertension_atlas.db")
+    db_path = Path("hypertension_atlas.db")
+    
+    if db_path.exists():
+        if db_path.stat().st_size == 0:
+            db_path.unlink()
 
-    # Load Master and Benchmark datasets from SQLite database
-    df_master = pd.read_sql_query("SELECT * FROM master_dataset", conn)
-    df_chrr = pd.read_sql_query("SELECT * FROM chrr_data", conn)
+    base_dir = Path(__file__).parent.parent
+    
+    master_csv = base_dir / "data" / "processed" / "master_dataset_all_variables.csv"
+    chrr_csv = base_dir / "data" / "raw" / "analytic_data2025.csv"
+    
+    xtrain_csv = base_dir / "data" / "final" / "X_train.csv"
+    xtest_csv = base_dir / "data" / "final" / "X_test.csv"
+    ytrain_csv = base_dir / "data" / "final" / "y_train.csv"
+    ytest_csv = base_dir / "data" / "final" / "y_test.csv"
 
-    # Load Train-Test Split datasets from SQLite database
-    X_train = pd.read_sql_query("SELECT * FROM x_train", conn)
-    X_test = pd.read_sql_query("SELECT * FROM x_test", conn)
-    y_train = pd.read_sql_query("SELECT * FROM y_train", conn)
-    y_test = pd.read_sql_query("SELECT * FROM y_test", conn)
+    if chrr_csv.exists():
+        try:
+            with open(chrr_csv, "r", encoding="utf-8", errors="ignore") as f:
+                first_line = f.readline()
+                if "version https://git-lfs.github.com" in first_line:
+                    chrr_csv.unlink(missing_ok=True)
+        except Exception:
+            pass
+
+    conn = sqlite3.connect(db_path)
+    
+    try:
+        tables = pd.read_sql_query("SELECT name FROM sqlite_master WHERE type='table';", conn)['name'].tolist()
+    except Exception:
+        conn.close()
+        db_path.unlink(missing_ok=True)
+        conn = sqlite3.connect(db_path)
+        tables = []
+
+    if "master_dataset" not in tables and master_csv.exists():
+        st.info("Initializing master dataset table...")
+        pd.read_csv(master_csv).to_sql("master_dataset", conn, if_exists="replace", index=False)
+
+    if "chrr_data" not in tables and chrr_csv.exists():
+        st.info("Initializing CHRR data table...")
+        pd.read_csv(chrr_csv).to_sql("chrr_data", conn, if_exists="replace", index=False)
+
+    if "x_train" not in tables and xtrain_csv.exists():
+        pd.read_csv(xtrain_csv).to_sql("x_train", conn, if_exists="replace", index=False)
+
+    if "x_test" not in tables and xtest_csv.exists():
+        pd.read_csv(xtest_csv).to_sql("x_test", conn, if_exists="replace", index=False)
+
+    if "y_train" not in tables and ytrain_csv.exists():
+        pd.read_csv(ytrain_csv).to_sql("y_train", conn, if_exists="replace", index=False)
+
+    if "y_test" not in tables and ytest_csv.exists():
+        pd.read_csv(ytest_csv).to_sql("y_test", conn, if_exists="replace", index=False)
+
+    try:
+        df_master = pd.read_sql_query("SELECT * FROM master_dataset", conn)
+    except Exception as e:
+        st.error(f"Error loading master_dataset: {e}")
+        df_master = pd.DataFrame()
+
+    try:
+        df_chrr = pd.read_sql_query("SELECT * FROM chrr_data", conn)
+    except Exception:
+        df_chrr = pd.DataFrame()
+
+    # If chrr_data couldn't be loaded because the raw file was an LFS pointer,
+    # fall back to using the master dataset.
+    if df_chrr.empty and not df_master.empty:
+        df_chrr = df_master
+
+    try:
+        X_train = pd.read_sql_query("SELECT * FROM x_train", conn)
+        X_test = pd.read_sql_query("SELECT * FROM x_test", conn)
+        y_train = pd.read_sql_query("SELECT * FROM y_train", conn)
+        y_test = pd.read_sql_query("SELECT * FROM y_test", conn)
+    except Exception:
+        X_train = X_test = y_train = y_test = pd.DataFrame()
 
     conn.close()
     return df_master, df_chrr, X_train, X_test, y_train, y_test

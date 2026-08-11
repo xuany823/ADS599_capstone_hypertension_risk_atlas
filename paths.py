@@ -1,19 +1,17 @@
 from pathlib import Path
 import sys
 
-def get_project_root():
-    current_path = Path.cwd()
-    while current_path.name != "ADS599_Capstone_Hypertension_Risk_Atlas":
-        if current_path == current_path.parent:
-            raise FileNotFoundError("Could not find project root!")
-        current_path = current_path.parent
-    return current_path
+def get_project_root() -> Path:
+    """Get the absolute path to the project root reliably."""
+    return Path(__file__).resolve().parent
 
+# Define standard project paths
 BASE_PATH = get_project_root()
-DATA_RAW = BASE_PATH / "data" / "raw"
-DATA_PROCESSED = BASE_PATH / "data" / "processed"
+DATA_DIR = BASE_PATH / "data"
+DATA_RAW = DATA_DIR / "raw"
+DATA_PROCESSED = DATA_DIR / "processed"
 VALIDATION_DIR = BASE_PATH / "data" / "validation"
-DATA_FINAL = BASE_PATH / "data" / "final"
+DATA_FINAL = DATA_DIR / "final"
 
 def validate_and_alert(file_path, script_name, instructions):
     """
