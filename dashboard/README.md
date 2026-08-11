@@ -18,4 +18,4 @@ Integrity & Fairness Framework:
 
     - Explicitly frames structural metrics (such as food access) as systemic inequities rather than modifiable intervention targets, honoring that the analytics display association rather than causality.
 
-🔗 Live App: https://ads599capstonehypertensionriskatlas-3tepewveftselpfgfsn9nc.streamlit.app/
+🔗 Live App: [<ads599capstonehypertensionriskatlas-3tepewveftselpfgfsn9nc.streamlit.app>](https://ads599capstonehypertensionriskatlas-b6cz6ygt7lui5xt4s4awuk.streamlit.app/)
