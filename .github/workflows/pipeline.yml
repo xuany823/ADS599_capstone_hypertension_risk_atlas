@@ -56,4 +56,4 @@ jobs:
           data/final/eda_summary_report.html
           data/final/modeling_summary_report.html
           data/final/best_model_pipeline.joblib
-        retention-days: 2
+        retention-days: 30
