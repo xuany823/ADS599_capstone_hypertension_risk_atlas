@@ -53,4 +53,4 @@ renv/staging/
 
 # 5. Quarto / RStudio Build Artifacts
 .quarto/
-*_cache/
+*_cache/hypertension_atlas.db
